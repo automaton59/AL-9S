@@ -1,0 +1,20 @@
+{
+  "appId": "com.aigirlfriend.app",
+  "productName": "AI Girlfriend",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "dist-react/**/*",
+    "dist-electron/**/*"
+  ],
+  "mac": {
+    "target": ["dmg"]
+  },
+  "win": {
+    "target": ["nsis"]
+  },
+  "linux": {
+    "target": ["AppImage"]
+  }
+}

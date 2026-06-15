@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "electron:compile": "tsc electron/main.ts electron/preload.ts --outDir dist-electron --module commonjs --target es2020 --esModuleInterop --skipLibCheck --resolveJsonModule --moduleResolution bundler",
     "electron:dev": "electron .",
     "electron:build": "electron-builder"
   },
@@ -14,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^25.9.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
