@@ -1,23 +1,80 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { ChatWindow } from './components/Chat/ChatWindow';
+import { APISettings } from './components/Settings/APISettings';
+import { useSettingsStore } from './stores/settings';
 
-const App: React.FC = () => {
+type Tab = 'chat' | 'settings';
+
+function App() {
+  const [activeTab, setActiveTab] = useState<Tab>('chat');
+  const { isConfigured } = useSettingsStore();
+
+  // Show settings first if not configured
+  React.useEffect(() => {
+    if (!isConfigured) {
+      setActiveTab('settings');
+    }
+  }, [isConfigured]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 flex items-center justify-center">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
-        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 mb-4 text-center">
-          AL-1S
-        </h1>
-        <p className="text-gray-600 text-center mb-6">
-          Your AI Companion
-        </p>
-        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-6 border border-pink-200">
-          <p className="text-gray-700 text-center">
-            Welcome! I'm here to chat with you.
-          </p>
+    <div className="h-screen flex flex-col">
+      {/* Tab Navigation */}
+      <div className="border-b bg-white">
+        <div className="flex">
+          <button
+            onClick={() => setActiveTab('chat')}
+            className={`px-6 py-3 font-medium border-b-2 transition-colors ${
+              activeTab === 'chat'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Chat
+            {!isConfigured && (
+              <span className="ml-2 px-2 py-0.5 text-xs bg-yellow-100 text-yellow-800 rounded">
+                Configure first
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`px-6 py-3 font-medium border-b-2 transition-colors ${
+              activeTab === 'settings'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Settings
+          </button>
         </div>
+      </div>
+
+      {/* Tab Content */}
+      <div className="flex-1 overflow-hidden">
+        {activeTab === 'chat' ? (
+          isConfigured ? (
+            <ChatWindow />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-gray-50">
+              <div className="text-center">
+                <p className="text-gray-600 mb-4">
+                  Please configure your API settings first
+                </p>
+                <button
+                  onClick={() => setActiveTab('settings')}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                  Go to Settings
+                </button>
+              </div>
+            </div>
+          )
+        ) : (
+          <APISettings />
+        )}
       </div>
     </div>
   );
-};
+}
 
 export default App;
