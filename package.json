@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "electron:compile": "tsc electron/main.ts electron/preload.ts --outDir dist-electron --module commonjs --target es2020 --esModuleInterop --skipLibCheck --resolveJsonModule --moduleResolution bundler",
     "electron:dev": "electron .",
-    "electron:build": "electron-builder"
+    "electron:build": "electron-builder",
+    "start": "npm run electron:compile && cross-env NODE_ENV=development npm run electron:dev"
   },
   "keywords": [],
   "author": "",
