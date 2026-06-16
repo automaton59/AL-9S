@@ -12,6 +12,8 @@ export class OpenAIAdapter implements LLMService {
       apiKey: config.apiKey,
       baseURL: config.baseURL,
       dangerouslyAllowBrowser: true, // For Electron environment
+      timeout: 60000, // 60 seconds
+      maxRetries: 2,
     });
   }
 
@@ -37,51 +39,59 @@ export class OpenAIAdapter implements LLMService {
   }
 
   async chat(params: ChatParams): Promise<ChatResponse> {
-    const messages: OpenAIMessage[] = [
-      { role: 'system', content: params.systemPrompt },
-      ...this.convertMessages(params.messages),
-    ];
+    try {
+      const messages: OpenAIMessage[] = [
+        { role: 'system', content: params.systemPrompt },
+        ...this.convertMessages(params.messages),
+      ];
 
-    const response = await this.client.chat.completions.create({
-      model: this.config.model,
-      messages,
-      temperature: params.temperature ?? this.config.temperature ?? 0.8,
-      max_tokens: params.maxTokens ?? this.config.maxTokens ?? 2000,
-    });
+      const response = await this.client.chat.completions.create({
+        model: this.config.model,
+        messages,
+        temperature: params.temperature ?? this.config.temperature ?? 0.8,
+        max_tokens: params.maxTokens ?? this.config.maxTokens ?? 2000,
+      });
 
-    const content = response.choices[0]?.message?.content || '';
-    const { text, emotion } = this.parseEmotion(content);
+      const content = response.choices[0]?.message?.content || '';
+      const { text, emotion } = this.parseEmotion(content);
 
-    return {
-      content: text,
-      emotion,
-      usage: {
-        promptTokens: response.usage?.prompt_tokens || 0,
-        completionTokens: response.usage?.completion_tokens || 0,
-        totalTokens: response.usage?.total_tokens || 0,
-      },
-    };
+      return {
+        content: text,
+        emotion,
+        usage: {
+          promptTokens: response.usage?.prompt_tokens || 0,
+          completionTokens: response.usage?.completion_tokens || 0,
+          totalTokens: response.usage?.total_tokens || 0,
+        },
+      };
+    } catch (error) {
+      throw new Error(`LLM API call failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   async *streamChat(params: ChatParams): AsyncIterableIterator<string> {
-    const messages: OpenAIMessage[] = [
-      { role: 'system', content: params.systemPrompt },
-      ...this.convertMessages(params.messages),
-    ];
+    try {
+      const messages: OpenAIMessage[] = [
+        { role: 'system', content: params.systemPrompt },
+        ...this.convertMessages(params.messages),
+      ];
 
-    const stream = await this.client.chat.completions.create({
-      model: this.config.model,
-      messages,
-      temperature: params.temperature ?? this.config.temperature ?? 0.8,
-      max_tokens: params.maxTokens ?? this.config.maxTokens ?? 2000,
-      stream: true,
-    });
+      const stream = await this.client.chat.completions.create({
+        model: this.config.model,
+        messages,
+        temperature: params.temperature ?? this.config.temperature ?? 0.8,
+        max_tokens: params.maxTokens ?? this.config.maxTokens ?? 2000,
+        stream: true,
+      });
 
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || '';
-      if (content) {
-        yield content;
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content || '';
+        if (content) {
+          yield content;
+        }
       }
+    } catch (error) {
+      throw new Error(`LLM stream call failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }
