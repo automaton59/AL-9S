@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSettingsStore } from '../../stores/settings';
+import type { LLMConfig } from '../../services/interfaces';
 
 export function APISettings() {
   const { llmConfig, updateLLMConfig, isConfigured } = useSettingsStore();
@@ -72,7 +73,7 @@ export function APISettings() {
           </label>
           <select
             value={localConfig.provider}
-            onChange={(e) => setLocalConfig({ ...localConfig, provider: e.target.value as any })}
+            onChange={(e) => setLocalConfig({ ...localConfig, provider: e.target.value as LLMConfig['provider'] })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="openai">OpenAI</option>
