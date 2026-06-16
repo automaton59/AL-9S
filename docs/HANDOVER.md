@@ -566,6 +566,33 @@ const match = content.match(emotionRegex);
 - 界面文本硬编码为英文
 - 建议：Phase 3 引入 i18n（react-i18next）
 
+### 7.4 Self-Check Results (2026-06-16)
+
+**Comprehensive self-check completed before user testing.**
+
+**Issues Found:** 31 total
+**Issues Fixed:** 12 critical/high/medium priority
+**Status:** ✅ Ready for Phase 1 completion
+
+**Critical fixes applied:**
+- Config shallow merge bug (data loss)
+- Electron production build paths
+- Error handling in LLM adapter
+- Message ID collisions
+- Multiline input support
+- Settings change detection
+- Form validation
+- Smart auto-scroll
+- User-friendly error messages
+
+**Remaining work for Phase 2:**
+- Message history management (unbounded array)
+- Advanced error recovery (retry logic)
+- Multiple emotion tag handling
+- Performance optimizations
+
+See `docs/self-check-findings.md` and `docs/TESTING.md` for details.
+
 ---
 
 ## 8. 开发指南
