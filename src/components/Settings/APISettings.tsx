@@ -6,8 +6,35 @@ export function APISettings() {
 
   const [localConfig, setLocalConfig] = useState(llmConfig);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState('');
 
   const handleSave = () => {
+    // Validate
+    const errors: string[] = [];
+
+    if (!localConfig.apiKey.trim()) {
+      errors.push('API Key is required');
+    }
+
+    if (!localConfig.model.trim()) {
+      errors.push('Model is required');
+    }
+
+    if ((localConfig.provider === 'deepseek' || localConfig.provider === 'custom')
+        && !localConfig.baseURL?.trim()) {
+      errors.push('Base URL is required for this provider');
+    }
+
+    if (errors.length > 0) {
+      setShowError(errors.join(', '));
+      setTimeout(() => setShowError(''), 5000);
+      return;
+    }
+
+    // Clear any previous errors
+    setShowError('');
+
+    // Save
     updateLLMConfig(localConfig);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
@@ -22,6 +49,12 @@ export function APISettings() {
           <p className="text-yellow-700">
             Please configure your API settings to start chatting.
           </p>
+        </div>
+      )}
+
+      {showError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+          <p className="text-red-700">{showError}</p>
         </div>
       )}
 
