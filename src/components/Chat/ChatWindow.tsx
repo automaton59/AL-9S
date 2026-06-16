@@ -1,14 +1,18 @@
 import { useEffect } from 'react';
 import { useChatStore } from '../../stores/chat';
+import { useSettingsStore } from '../../stores/settings';
 import { MessageList } from './MessageList';
 import { InputBar } from './InputBar';
 
 export function ChatWindow() {
   const { messages, isLoading, error, sendMessage, initializeLLMService } = useChatStore();
+  const { isConfigured, llmConfig } = useSettingsStore();
 
   useEffect(() => {
-    initializeLLMService();
-  }, [initializeLLMService]);
+    if (isConfigured) {
+      initializeLLMService();
+    }
+  }, [isConfigured, llmConfig, initializeLLMService]);
 
   return (
     <div className="flex flex-col h-screen bg-white">
