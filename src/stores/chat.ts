@@ -72,8 +72,25 @@ export const useChatStore = create<ChatState>((set, get) => ({
         isLoading: false,
       }));
     } catch (error) {
+      let errorMessage = 'Unknown error occurred';
+
+      if (error instanceof Error) {
+        const msg = error.message.toLowerCase();
+        if (msg.includes('401') || msg.includes('unauthorized')) {
+          errorMessage = 'Invalid API key. Please check your settings.';
+        } else if (msg.includes('429') || msg.includes('rate limit')) {
+          errorMessage = 'Rate limit exceeded. Please wait and try again.';
+        } else if (msg.includes('network') || msg.includes('fetch failed')) {
+          errorMessage = 'Network error. Please check your internet connection.';
+        } else if (msg.includes('timeout')) {
+          errorMessage = 'Request timed out. The API took too long to respond.';
+        } else {
+          errorMessage = `Error: ${error.message}`;
+        }
+      }
+
       set({
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: errorMessage,
         isLoading: false,
       });
     }
