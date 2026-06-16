@@ -3,6 +3,12 @@ import type { Message, LLMService } from '../services/interfaces';
 import { LLMServiceFactory } from '../services/llm';
 import { useSettingsStore } from './settings';
 
+let messageCounter = 0;
+
+const generateMessageId = () => {
+  return `msg_${Date.now()}_${messageCounter++}`;
+};
+
 interface ChatState {
   messages: Message[];
   isLoading: boolean;
@@ -35,7 +41,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: generateMessageId(),
       role: 'user',
       content,
       timestamp: new Date(),
@@ -54,7 +60,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       });
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateMessageId(),
         role: 'assistant',
         content: response.content,
         timestamp: new Date(),
