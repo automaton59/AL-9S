@@ -17,7 +17,10 @@ export class ConfigService {
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
       if (stored) {
-        return { ...DEFAULT_CONFIG, ...JSON.parse(stored) };
+        const parsed = JSON.parse(stored);
+        return {
+          llm: { ...DEFAULT_CONFIG.llm, ...(parsed.llm || {}) }
+        };
       }
     } catch (error) {
       console.error('Failed to load config:', error);
