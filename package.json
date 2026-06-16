@@ -2,7 +2,7 @@
   "name": "al-1s",
   "version": "1.0.0",
   "description": "AI Girlfriend Desktop Application",
-  "main": "electron/main.js",
+  "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
