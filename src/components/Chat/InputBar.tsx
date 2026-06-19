@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SendHorizontal } from 'lucide-react';
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -24,24 +25,24 @@ export function InputBar({ onSend, disabled }: InputBarProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t p-4">
-      <div className="flex space-x-2">
+    <form onSubmit={handleSubmit} className="shrink-0 border-t border-white/70 bg-white/65 p-3 backdrop-blur dark:border-white/10 dark:bg-[#171018]/65 sm:p-4">
+      <div className="flex items-end gap-2 rounded-3xl border border-white/80 bg-white/90 p-2 shadow-sm shadow-rose-100 dark:border-white/10 dark:bg-white/10 dark:shadow-none">
         <textarea
           rows={1}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message..."
+          placeholder="输入消息..."
           disabled={disabled}
-          className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 resize-none overflow-hidden"
-          style={{ minHeight: '42px', maxHeight: '200px' }}
+          className="min-h-11 max-h-40 flex-1 resize-none overflow-y-auto rounded-2xl border-0 bg-transparent px-4 py-2 text-slate-950 outline-none placeholder:text-slate-400 disabled:text-slate-400 dark:text-rose-50 dark:placeholder:text-slate-500 dark:disabled:text-slate-500"
         />
         <button
           type="submit"
           disabled={disabled || !input.trim()}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-rose-500 font-medium text-white shadow-sm shadow-rose-200 hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none dark:bg-rose-400 dark:text-[#1b1018] dark:hover:bg-rose-300 dark:disabled:bg-slate-700 dark:disabled:text-slate-400"
+          title="发送"
         >
-          Send
+          <SendHorizontal size={19} />
         </button>
       </div>
     </form>

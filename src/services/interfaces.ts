@@ -5,6 +5,17 @@ export interface Message {
   content: string;
   timestamp: Date;
   emotion?: string;
+  reasoning?: string;
+  status?: 'pending' | 'sent' | 'failed';
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  characterId: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // LLM Service
@@ -15,9 +26,14 @@ export interface ChatParams {
   maxTokens?: number;
 }
 
+export interface LLMCallOptions {
+  signal?: AbortSignal;
+}
+
 export interface ChatResponse {
   content: string;
   emotion?: string;
+  reasoning?: string;
   usage?: {
     promptTokens: number;
     completionTokens: number;
@@ -26,7 +42,7 @@ export interface ChatResponse {
 }
 
 export interface LLMService {
-  chat(params: ChatParams): Promise<ChatResponse>;
+  chat(params: ChatParams, options?: LLMCallOptions): Promise<ChatResponse>;
   streamChat(params: ChatParams): AsyncIterableIterator<string>;
 }
 
@@ -40,6 +56,43 @@ export interface LLMConfig {
   maxTokens?: number;
 }
 
+export interface LLMModelInfo {
+  id: string;
+  name?: string;
+  ownedBy?: string;
+}
+
+export type APIKeyEncoding = 'safe:v1' | 'plain:fallback';
+
+export interface APIProfile {
+  id: string;
+  name: string;
+  provider: LLMConfig['provider'];
+  baseURL?: string;
+  model: string;
+  temperature?: number;
+  maxTokens?: number;
+  encryptedApiKey: string;
+  keyEncoding: APIKeyEncoding;
+  lastConnectedAt?: string;
+}
+
+export type ConnectionStatus = 'unconfigured' | 'checking' | 'online' | 'offline' | 'typing';
+export type ThemeMode = 'system' | 'light' | 'dark';
+
+export interface CharacterConfig {
+  id: string;
+  name: string;
+  description: string;
+  scenario: string;
+  firstMessage: string;
+  systemPrompt: string;
+}
+
 export interface AppConfig {
   llm: LLMConfig;
+  characters: CharacterConfig[];
+  activeCharacterId: string;
+  activeProfileId?: string | null;
+  themeMode: ThemeMode;
 }

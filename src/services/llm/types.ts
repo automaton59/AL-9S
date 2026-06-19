@@ -10,12 +10,23 @@ export interface OpenAIMessage {
 
 export interface OpenAIChatResponse {
   choices: Array<{
-    message: {
-      content: string;
+    message?: {
+      content?: unknown;
+      reasoning_content?: string;
+      reasoning?: string;
+      reasoning_details?: unknown[];
     };
-    finish_reason: string;
+    delta?: {
+      content?: unknown;
+      reasoning_content?: string;
+      reasoning?: string;
+      reasoning_details?: unknown[];
+    };
+    text?: string;
+    reasoning?: string;
+    finish_reason?: string;
   }>;
-  usage: {
+  usage?: {
     prompt_tokens: number;
     completion_tokens: number;
     total_tokens: number;

@@ -27,6 +27,12 @@ dist-electron
 .env
 .env.local
 .env.*.local
+*.local.json
+data/
+secrets/
+api-profiles*.json
+config.local.json
+chat-history.local.json
 
 # Build outputs
 out

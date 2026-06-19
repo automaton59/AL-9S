@@ -4,10 +4,21 @@ import type { Message } from '../../services/interfaces';
 
 interface MessageListProps {
   messages: Message[];
-  isLoading: boolean;
+  firstMessage?: string;
+  onEditMessage?: (messageId: string, content: string) => void;
+  onRetractMessage?: (messageId: string) => void;
+  onRegenerateMessage?: (messageId: string) => void;
+  onDeleteAfterMessage?: (messageId: string) => void;
 }
 
-export function MessageList({ messages, isLoading }: MessageListProps) {
+export function MessageList({
+  messages,
+  firstMessage,
+  onEditMessage,
+  onRetractMessage,
+  onRegenerateMessage,
+  onDeleteAfterMessage,
+}: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
 
@@ -29,27 +40,23 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
     <div
       ref={scrollRef}
       onScroll={handleScroll}
-      className="flex-1 overflow-y-auto p-4 space-y-2"
+      className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4"
     >
       {messages.length === 0 ? (
-        <div className="text-center text-gray-500 mt-8">
-          No messages yet. Start a conversation!
+        <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-white/80 bg-white/80 px-5 py-4 text-center text-slate-500 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:shadow-none">
+          {firstMessage || '还没有消息'}
         </div>
       ) : (
         messages.map((message) => (
-          <MessageItem key={message.id} message={message} />
+          <MessageItem
+            key={message.id}
+            message={message}
+            onEdit={onEditMessage}
+            onRetract={onRetractMessage}
+            onRegenerate={onRegenerateMessage}
+            onDeleteAfter={onDeleteAfterMessage}
+          />
         ))
-      )}
-      {isLoading && (
-        <div className="flex justify-start mb-4">
-          <div className="bg-gray-200 rounded-lg px-4 py-2">
-            <div className="flex space-x-2">
-              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
-              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '100ms' }} />
-              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );
